@@ -24,6 +24,7 @@ FocusScope {
         TextArea {
             id: input
             background: Item {}
+            wrapMode: TextEdit.Wrap
             focus: true
         }
     }
