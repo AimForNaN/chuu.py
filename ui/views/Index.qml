@@ -70,7 +70,7 @@ Rectangle {
             inputCurrent.text = txt;
         }
         function onTranscribe(txt) {
-            inputFinal.text = inputFinal.text + txt;
+            inputFinal.text = inputFinal.text + ' ' + txt;
         }
     }
 }
