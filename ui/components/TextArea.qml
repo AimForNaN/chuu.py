@@ -15,7 +15,6 @@ FocusScope {
         focusPolicy: Qt.WheelFocus
 
         background: Rectangle {
-            // anchors.fill: parent
             color: "white"
             border.color: root.focus ? "#94a3b8" : "#cbd5e1"
             border.width: 1
