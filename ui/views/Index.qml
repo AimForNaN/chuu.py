@@ -41,6 +41,7 @@ Rectangle {
         }
 
         TextArea {
+            id: input
             Layout.fillHeight: true
             Layout.fillWidth: true
             font.pixelSize: 16
@@ -52,6 +53,13 @@ Rectangle {
             backgroundColor: "#334155"
             color: "white"
             text: "Copy Text"
+        }
+    }
+
+    Connections {
+        target: chuu
+        function onTranscribe(txt) {
+            input.text = input.text + txt;
         }
     }
 }
