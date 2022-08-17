@@ -1,6 +1,8 @@
 import QtQuick
+import QtQuick.Controls
 
 FocusScope {
+    id: root
     height: 100
     width: 200
 
@@ -8,21 +10,22 @@ FocusScope {
     property alias input: input
     property alias text: input.text
 
-    Rectangle {
+    ScrollView {
         anchors.fill: parent
-        color: "white"
-        border.color: parent.focus ? "#94a3b8" : "#cbd5e1"
-        radius: 3
-    }
+        focusPolicy: Qt.WheelFocus
 
-    TextInput {
-        id: input
-        anchors.fill: parent
-        bottomPadding: 8
-        leftPadding: 8
-        rightPadding: 8
-        topPadding: 8
-        wrapMode: TextInput.Wrap
-        focus: true
+        background: Rectangle {
+            // anchors.fill: parent
+            color: "white"
+            border.color: root.focus ? "#94a3b8" : "#cbd5e1"
+            border.width: 1
+            radius: 3
+        }
+
+        TextArea {
+            id: input
+            background: Item {}
+            focus: true
+        }
     }
 }
