@@ -12,7 +12,7 @@ FocusScope {
 
     ScrollView {
         anchors.fill: parent
-        focusPolicy: Qt.WheelFocus
+        focusPolicy: Qt.ClickFocus
 
         background: Rectangle {
             color: "white"
