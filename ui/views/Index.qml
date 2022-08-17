@@ -26,7 +26,7 @@ Rectangle {
                 width: 100
                 visible: !chuu.isRecording
 
-                onClicked: chuu.startRecording()
+                onClicked: chuu.start()
             }
 
             Button {
@@ -36,12 +36,19 @@ Rectangle {
                 width: 100
                 visible: chuu.isRecording
 
-                onClicked: chuu.endRecording()
+                onClicked: chuu.stop()
             }
         }
 
         TextArea {
-            id: input
+            id: inputCurrent
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            font.pixelSize: 16
+        }
+
+        TextArea {
+            id: inputFinal
             Layout.fillHeight: true
             Layout.fillWidth: true
             font.pixelSize: 16
@@ -58,8 +65,11 @@ Rectangle {
 
     Connections {
         target: chuu
+        function onCurrent(txt) {
+            inputCurrent.text = txt;
+        }
         function onTranscribe(txt) {
-            input.text = input.text + txt;
+            inputFinal.text = inputFinal.text + txt;
         }
     }
 }

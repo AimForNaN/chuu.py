@@ -1,41 +1,44 @@
-import numpy;
-from stt import Model as SttModel;
-from PySide6.QtCore import QObject, Property, Signal, Slot
+from PySide6.QtCore import QThread, Property, Signal, Slot
 
 from .recorder import Recorder;
+from .transcriber import Transcriber
 
-class chuu(QObject):
+class chuu(QThread):
     __recorder = None;
-    __stt = None;
+    __transcriber = None;
     
     recordingStateChanged = Signal();
+    current = Signal(str, arguments=['string']); 
     transcribe = Signal(str, arguments=['string']); 
 
     def __init__(self, model='./models/model.tflite', scorer='./models/model.scorer'):
         super().__init__();
 
         self.__recorder = Recorder();
-        self.__stt = SttModel(model);
-        self.__stt.enableExternalScorer(scorer);
+        self.__transcriber = Transcriber(model, scorer);
 
-        self.__recorder.finished.connect(self.recordingStateChanged);
-        self.__recorder.recording.connect(self.parse);
-        self.__recorder.started.connect(self.recordingStateChanged);
+        self.finished.connect(self.recordingStateChanged);
+        self.started.connect(self.recordingStateChanged);
+
 
     def getIsRecording(self):
-        return self.__recorder.isRunning();
+        return self.isRunning();
 
-    @Slot()
-    def endRecording(self):
-        self.__recorder.requestInterruption();
-
-    @Slot(object)
-    def parse(self, audio):
-        audio = numpy.frombuffer(audio, dtype=numpy.int16);
-        self.transcribe.emit(self.__stt.stt(audio));
-
-    @Slot()
-    def startRecording(self):
+    def run(self):
         self.__recorder.start();
+        self.__transcriber.start();
+
+        while self.isInterruptionRequested() is False:
+            chunk = self.__recorder.chunk();
+            if chunk is not None:
+                self.__transcriber.push(chunk);
+                self.current.emit(self.__transcriber.current());
+
+        self.__recorder.stop();
+        self.transcribe.emit(self.__transcriber.stop());
+
+    @Slot()
+    def stop(self):
+        self.requestInterruption();
 
     isRecording = Property(bool, getIsRecording, notify=recordingStateChanged);

@@ -22,6 +22,7 @@ FocusScope {
         leftPadding: 8
         rightPadding: 8
         topPadding: 8
+        wrapMode: TextInput.Wrap
         focus: true
     }
 }

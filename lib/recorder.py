@@ -1,18 +1,18 @@
-from PySide6.QtCore import QThread, Signal;
+import numpy;
 import pyaudio;
 
-class Recorder(QThread):
+class Recorder:
     Channels = 1; # mono
     Chunks = 320;
     Format = pyaudio.paInt16;
     Rate = 16000;
 
-    recording = Signal(object, arguments=['object']);
-    
-    def run(self):
-        chunks = [];
-        p = pyaudio.PyAudio();
-        stream = p.open(
+    __audio = None;
+    __stream = None;
+
+    def start(self):
+        self.__audio = pyaudio.PyAudio();
+        self.__stream = self.__audio.open(
             format=Recorder.Format,
             channels=Recorder.Channels,
             rate=Recorder.Rate,
@@ -20,14 +20,11 @@ class Recorder(QThread):
             frames_per_buffer=Recorder.Chunks
         );
 
-        # self = QThread.currentThread();
-        while self.isInterruptionRequested() is False:
-            chunk = stream.read(Recorder.Chunks);
-            chunks.append(chunk);
+    def chunk(self):
+        data = self.__stream.read(Recorder.Chunks);
+        return numpy.frombuffer(data, dtype=numpy.int16);
 
-        stream.stop_stream();
-        stream.close();
-        p.terminate();
-
-        data = b''.join(chunks);
-        self.recording.emit(data);
+    def stop(self):
+        self.__stream.stop_stream();
+        self.__stream.close();
+        self.__audio.terminate();
