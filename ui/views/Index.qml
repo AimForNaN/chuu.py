@@ -45,6 +45,7 @@ Rectangle {
             Layout.fillHeight: true
             Layout.fillWidth: true
             font.pixelSize: 16
+            input.readOnly: true
         }
 
         TextArea {
